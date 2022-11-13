@@ -1,0 +1,346 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Venta boletos de cine",
+    "description" : "Sistema para la administración de venta de boletos de un cine, manejo de salas, películas y funciones.",
+    "termsOfService" : "http://swagger.io/terms/",
+    "contact" : {
+      "email" : "l19141205@queretaro.tecnm.mx"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "externalDocs" : {
+    "description" : "Find out more about Swagger",
+    "url" : "http://swagger.io"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/LuisFerTR/Sistema_Cine/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  }, {
+    "url" : "https://localhost:8081",
+    "description" : "Servidor local"
+  } ],
+  "tags" : [ {
+    "name" : "Sala",
+    "description" : "Información de las salas"
+  }, {
+    "name" : "Funcion",
+    "description" : "Información de las funciones"
+  }, {
+    "name" : "Pelicula",
+    "description" : "Información de las películas"
+  }, {
+    "name" : "Asiento",
+    "description" : "Información de los asientos"
+  } ],
+  "paths" : {
+    "/cine/sala" : {
+      "post" : {
+        "tags" : [ "Sala" ],
+        "summary" : "Agregar una nueva sala",
+        "operationId" : "createSala",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/Sala"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Sala creada exitosamente"
+          },
+          "422" : {
+            "description" : "Solicitud JSON mal construida"
+          }
+        }
+      }
+    },
+    "/cine/sala/{idSala}" : {
+      "get" : {
+        "tags" : [ "Sala" ],
+        "summary" : "Buscar sala",
+        "operationId" : "readSala",
+        "parameters" : [ {
+          "name" : "idSala",
+          "in" : "path",
+          "description" : "ID de la sala",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Sala encontrada exitosamente",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Sala"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "ID no válido"
+          }
+        }
+      }
+    },
+    "/cine/funcion" : {
+      "post" : {
+        "tags" : [ "Funcion" ],
+        "summary" : "Agregar una nueva funcion",
+        "operationId" : "createFuncion",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/cine_funcion_body"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Funcion creada exitosamente"
+          },
+          "422" : {
+            "description" : "Solicitud JSON mal construida"
+          }
+        }
+      }
+    },
+    "/cine/funcion/{idFuncion}" : {
+      "get" : {
+        "tags" : [ "Funcion" ],
+        "summary" : "Buscar Funcion",
+        "operationId" : "readFuncion",
+        "parameters" : [ {
+          "name" : "idFuncion",
+          "in" : "path",
+          "description" : "ID de la funcion",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Funcion encontrada exitosamente",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Funcion"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "ID no válido"
+          }
+        }
+      }
+    },
+    "/cine/funcion/estado" : {
+      "put" : {
+        "tags" : [ "Funcion" ],
+        "summary" : "Actualizar estado de funcion",
+        "description" : "Cambiar estado de funcion por un estado válido.",
+        "operationId" : "updateEstadoFuncion",
+        "requestBody" : {
+          "description" : "Estado de funcion actualizado",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EstadoFuncion"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "El estado de la función ha sido actualizado exitosamente"
+          },
+          "400" : {
+            "description" : "ID no válido"
+          },
+          "422" : {
+            "description" : "Solicitud JSON mal construida"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Sala" : {
+        "type" : "object",
+        "properties" : {
+          "idSala" : {
+            "maximum" : 3,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "cantColumnas" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "cantFilas" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "estado" : {
+            "type" : "string",
+            "enum" : [ "DISPONIBLE", "MANTENIMIENTO", "RESERVADA" ]
+          }
+        },
+        "description" : "Sala de cine",
+        "example" : {
+          "idSala" : 1,
+          "cantColumnas" : 10,
+          "cantFilas" : 10,
+          "estado" : "DISPONIBLE"
+        }
+      },
+      "Funcion" : {
+        "type" : "object",
+        "properties" : {
+          "idFuncion" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fecha" : {
+            "pattern" : "^([0-9]{4}[-][0-9]{2}[-][0-9]{2})$",
+            "type" : "string"
+          },
+          "hora" : {
+            "pattern" : "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$",
+            "type" : "string"
+          },
+          "idPelicula" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "idSala" : {
+            "maximum" : 3,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "estado" : {
+            "type" : "string",
+            "enum" : [ "DISPONIBLE", "LLENA" ]
+          }
+        },
+        "description" : "Función de cine",
+        "example" : {
+          "idFuncion" : 1,
+          "fecha" : "2022-11-12",
+          "hora" : 899,
+          "idSala" : 1,
+          "idPelicula" : 1,
+          "estado" : "DISPONIBLE"
+        }
+      },
+      "EstadoFuncion" : {
+        "type" : "object",
+        "properties" : {
+          "idFuncion" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "estado" : {
+            "type" : "string",
+            "enum" : [ "DISPONIBLE", "LLENA" ]
+          }
+        },
+        "description" : "Cambio de estado de cine",
+        "example" : {
+          "idFuncion" : 3,
+          "estado" : "DISPONIBLE"
+        }
+      },
+      "cine_funcion_body" : {
+        "type" : "object",
+        "properties" : {
+          "fecha" : {
+            "pattern" : "^([0-9]{4}[-][0-9]{2}[-][0-9]{2})$",
+            "type" : "string"
+          },
+          "hora" : {
+            "pattern" : "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$",
+            "type" : "string"
+          },
+          "idPelicula" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "idSala" : {
+            "maximum" : 3,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "estado" : {
+            "type" : "string",
+            "enum" : [ "DISPONIBLE", "LLENA" ]
+          }
+        },
+        "example" : {
+          "fecha" : "2022-11-12",
+          "hora" : 899,
+          "idSala" : 1,
+          "idPelicula" : 1,
+          "estado" : "DISPONIBLE"
+        }
+      }
+    },
+    "requestBodies" : {
+      "Sala" : {
+        "description" : "Sala que necesita ser registrada en el cine",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Sala"
+            }
+          },
+          "application/xml" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Sala"
+            }
+          }
+        },
+        "required" : true
+      },
+      "Funcion" : {
+        "description" : "Sala que necesita ser registrada en el cine",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Funcion"
+            }
+          },
+          "application/xml" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Funcion"
+            }
+          }
+        },
+        "required" : true
+      }
+    }
+  }
+}
